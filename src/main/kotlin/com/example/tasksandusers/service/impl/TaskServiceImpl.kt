@@ -9,6 +9,8 @@ import com.example.tasksandusers.repository.TaskRepository
 import com.example.tasksandusers.repository.UserRepository
 import com.example.tasksandusers.service.TaskService
 import com.example.tasksandusers.util.UserUtils
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,16 +20,16 @@ class TaskServiceImpl(
     private val taskMapper: TaskMapperImpl
 ) : TaskService {
     // Получаем список всех задач
-    override fun getAllTasks(): List<TaskDTO> {
+    override fun getAllTasks(pageable: Pageable): Page<TaskDTO> {
         val id: Long = UserUtils.getCurrentUserId()
-        val tasks: List<Task> = taskRepository.findByUserId(id)
-        return tasks.map { task -> taskMapper.toDTO(task) }
+        val tasks: Page<Task> = taskRepository.findAllByUserId(id, pageable)
+        return tasks.map { taskMapper.toDTO(it) }
     }
 
     //Получаем задачу по taskId
     override fun getTaskById(taskId: Long): TaskDTO {
         val id: Long = UserUtils.getCurrentUserId()
-        val task: Task? = taskRepository.getByIdAndUserId(taskId, id)
+        val task: Task? = taskRepository.findByIdAndUserId(taskId, id)
         return if (task != null) {
             taskMapper.toDTO(task)
         } else {
@@ -44,7 +46,7 @@ class TaskServiceImpl(
 
     //Обновляем задачу, если она найдена, если нет выбрасываем исключение
     override fun updateTask(taskId: Long, task: TaskDTO): TaskDTO {
-        val taskFromDB: Task = taskRepository.getByIdAndUserId(taskId, UserUtils.getCurrentUserId())
+        val taskFromDB: Task = taskRepository.findByIdAndUserId(taskId, UserUtils.getCurrentUserId())
             ?: throw TaskNotFoundException(taskId)
         val result: Task = taskRepository.save(taskMapper.updateTask(task, taskFromDB))
         return taskMapper.toDTO(result)
@@ -52,7 +54,7 @@ class TaskServiceImpl(
 
     //Удаляем задачу
     override fun deleteTaskById(taskId: Long) {
-        val taskFromDB: Task? = taskRepository.getByIdAndUserId(taskId, UserUtils.getCurrentUserId())
+        val taskFromDB: Task? = taskRepository.findByIdAndUserId(taskId, UserUtils.getCurrentUserId())
         if (taskFromDB != null) {
             taskRepository.delete(taskFromDB)
         }
@@ -60,7 +62,7 @@ class TaskServiceImpl(
 
     override fun changeUser(taskId: Long, userId: Long): TaskDTO {
         val user: User = userRepository.findById(userId).get()
-        val task: Task? = taskRepository.getByIdAndUserId(taskId, UserUtils.getCurrentUserId())
+        val task: Task? = taskRepository.findByIdAndUserId(taskId, UserUtils.getCurrentUserId())
         return if (task != null) {
             taskMapper.toDTO(taskRepository.save(taskMapper.changeUser(task, user)))
         } else {

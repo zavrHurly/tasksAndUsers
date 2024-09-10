@@ -2,13 +2,15 @@ package com.example.tasksandusers.controller
 
 import com.example.tasksandusers.model.dto.TaskDTO
 import com.example.tasksandusers.service.impl.TaskServiceImpl
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
 
 @RestController
 class TaskController(private val taskService: TaskServiceImpl) {
 
     @GetMapping("/tasks")
-    fun getAllTasks(): List<TaskDTO> = taskService.getAllTasks()
+    fun getAllTasks(page: Pageable): Page<TaskDTO> = taskService.getAllTasks(page)
 
     @GetMapping("/tasks/{id}")
     fun getTaskById(@PathVariable("id") taskId: Long): TaskDTO =
