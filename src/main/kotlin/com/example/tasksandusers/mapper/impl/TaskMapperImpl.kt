@@ -1,5 +1,6 @@
 package com.example.tasksandusers.mapper.impl
 
+import com.example.tasksandusers.exception.ServiceException
 import com.example.tasksandusers.mapper.TaskMapper
 import com.example.tasksandusers.model.dto.TaskDTO
 import com.example.tasksandusers.model.entity.Task
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Component
 class TaskMapperImpl : TaskMapper {
 
     override fun taskDTOToTask(taskDTO: TaskDTO?, userToSave: User): Task {
-        return if (taskDTO != null) {
-            Task(
+        if (taskDTO != null) {
+            if(taskDTO.name.isEmpty()) throw ServiceException("Имя не должно быть пустым")
+            return Task(
                 id = null,
                 name = taskDTO.name,
                 description = taskDTO.description,
