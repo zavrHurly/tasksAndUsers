@@ -1,6 +1,7 @@
 package com.example.tasksandusers.service.impl
 
 import com.example.tasksandusers.exception.TaskNotFoundException
+import com.example.tasksandusers.exception.UserNotFoundException
 import com.example.tasksandusers.mapper.impl.TaskMapperImpl
 import com.example.tasksandusers.model.dto.TaskDTO
 import com.example.tasksandusers.model.entity.Task
@@ -61,7 +62,7 @@ class TaskServiceImpl(
     }
 
     override fun changeUser(taskId: Long, userId: Long): TaskDTO {
-        val user: User = userRepository.findById(userId).get()
+        val user: User = userRepository.findUserById(userId) ?: throw UserNotFoundException(userId)
         val task: Task? = taskRepository.findByIdAndUserId(taskId, UserUtils.getCurrentUserId())
         return if (task != null) {
             taskMapper.toDTO(taskRepository.save(taskMapper.changeUser(task, user)))

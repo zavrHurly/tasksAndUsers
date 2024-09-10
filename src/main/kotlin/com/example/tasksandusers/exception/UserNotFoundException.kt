@@ -1,3 +1,3 @@
 package com.example.tasksandusers.exception
 
-class UserNotFoundException(message: String) : Exception(message)
+class UserNotFoundException(userId: Long) : Exception("Пользователь с id $userId не найдена")
