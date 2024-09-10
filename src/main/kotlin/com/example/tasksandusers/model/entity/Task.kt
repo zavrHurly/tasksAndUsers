@@ -1,20 +1,20 @@
 package com.example.tasksandusers.model.entity
 
 import jakarta.persistence.*
-import java.time.LocalDate
+import java.time.Instant
 
 @Entity
 @Table(name = "task")
-data class Task(
+open class Task(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long?,
+    open val id: Long?,
     @Column(name = "name", nullable = false, length = 100)
-    val name: String,
+    open var name: String,
     @Column(name = "description", length = 1000)
-    val description: String,
+    open var description: String,
     @Column(name = "date")
-    val date: LocalDate,
+    open var date: Instant,
     @JoinColumn(name = "userId", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    val user: User,
+    open var user: User,
 )

@@ -1,30 +1,30 @@
 package com.example.tasksandusers.controller
 
-import com.example.tasksandusers.model.entity.Task
-import com.example.tasksandusers.model.entity.User
-import com.example.tasksandusers.service.TaskService
-import com.example.tasksandusers.service.UserService
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import com.example.tasksandusers.model.dto.CreateUserRequestDTO
+import com.example.tasksandusers.model.dto.LoginRequestDTO
+import com.example.tasksandusers.model.dto.UserDTO
+import com.example.tasksandusers.service.impl.UserServiceImpl
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class UserController(private val userService: UserService) {
+class UserController(private val userService: UserServiceImpl) {
 
-    @GetMapping("/tasks")
-    fun getAllUsers(): List<User> = userService.getAllUsers()
+    @GetMapping("/users")
+    fun getAllUsers(): List<UserDTO> = userService.getAllUsers()
 
-    @GetMapping("/tasks/{id}")
-    fun getTaskById(@PathVariable("id") userId: Long): Optional<User> =
-        userService.getUserById(userId)
+    @PostMapping("/registration")
+    fun createUser(@RequestBody userRequest: CreateUserRequestDTO): ResponseEntity<String> {
+        val userId: Long? = userService.createUser(userRequest)
+        return ResponseEntity.ok("User with ID $userId has been created")
+    }
 
-    @PostMapping("/tasks")
-    fun createEmployee(@RequestBody payload: User): User = userService.createUser(payload)
-
-    @PutMapping("/tasks/{id}")
-    fun updateUserById(@PathVariable("id") userId: Long, @RequestBody payload: User): User =
-        userService.updateUser(userId, payload)
-
-    @DeleteMapping("/tasks/{id}")
-    fun deleteTask(@PathVariable("id") userId: Long) = userService.deleteUserById(userId)
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginRequestDTO): ResponseEntity<*> {
+        return ResponseEntity.ok().body(userService.login(request))
+    }
 
 }

@@ -1,10 +1,9 @@
 package com.example.tasksandusers.model.dto
 
 
-
-class UserDTO (
+class UserDTO(
     val id: Long,
-    val name: String,
-    val password: String,
-    val email: String,
+    var name: String,
+    var password: String,
+    var email: String
 )

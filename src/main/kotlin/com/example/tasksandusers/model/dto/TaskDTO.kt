@@ -1,12 +1,11 @@
 package com.example.tasksandusers.model.dto
 
-import java.time.LocalDate
+import java.time.Instant
 
 
 class TaskDTO(
     val id: Long,
-    val name: String,
-    val description: String,
-    val date: LocalDate,
-    val userId : Long,
+    var name: String,
+    var description: String,
+    var date: Instant
 )
