@@ -5,6 +5,7 @@ import com.example.tasksandusers.mapper.UserMapper
 import com.example.tasksandusers.model.dto.CreateUserRequestDTO
 import com.example.tasksandusers.model.dto.UserDTO
 import com.example.tasksandusers.model.entity.User
+import com.example.tasksandusers.util.EmailValidator
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component
 class UserMapperImpl(val passwordEncoder: PasswordEncoder) : UserMapper {
 
     override fun toEntity(dto: CreateUserRequestDTO): User {
-        return if (dto.name.isNotEmpty() && dto.password.isNotEmpty() && dto.password.isNotEmpty()) {
+        return if (dto.name.isNotEmpty() && dto.password.isNotEmpty() && EmailValidator.isValid(dto.email)) {
             User(
                 id = null,
                 name = dto.name,
@@ -20,7 +21,7 @@ class UserMapperImpl(val passwordEncoder: PasswordEncoder) : UserMapper {
                 email = dto.email,
             )
         } else {
-            throw ServiceException("Поля не должны быть пустыми")
+            throw ServiceException("Одно или несколько полей указаны некорретно")
         }
     }
 

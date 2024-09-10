@@ -7,6 +7,7 @@ import com.example.tasksandusers.mapper.impl.UserMapperImpl
 import com.example.tasksandusers.model.dto.*
 import com.example.tasksandusers.repository.UserRepository
 import com.example.tasksandusers.service.UserService
+import com.example.tasksandusers.util.EmailValidator
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -29,7 +30,7 @@ class UserServiceImpl(
     //Создаем пользователя
     override fun createUser(user: CreateUserRequestDTO): Long? {
         if (userRepository.existsByEmail(user.email)) {
-            throw ServiceException("Недопустимый email")
+            throw ServiceException("Этот email уже используется")
         }
         return userRepository.save(userMapper.toEntity(user)).id
     }
