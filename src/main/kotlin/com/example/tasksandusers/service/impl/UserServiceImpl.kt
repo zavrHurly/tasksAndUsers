@@ -28,28 +28,25 @@ class UserServiceImpl(
     }
 
     //Создаем пользователя
-    override fun createUser(user: CreateUserRequestDTO): Long? {
+    override fun createUser(user: CreateUserRequestDTO): Long {
         if (userRepository.existsByEmail(user.email)) {
+            //def вариант для очевидности
             throw ServiceException("Этот email уже используется")
         }
-        return userRepository.save(userMapper.toEntity(user)).id
+        return userRepository.save(userMapper.toEntity(user)).id ?: throw ServiceException("Ошибка сервиса")
     }
 
     override fun login(request: LoginRequestDTO): LoginResponseDTO {
-        try {
-            val authentication: Authentication = authManager.authenticate(
-                UsernamePasswordAuthenticationToken(
-                    request.email,
-                    request.password
-                )
+        val authentication: Authentication = authManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                request.email,
+                request.password
             )
+        )
 
-            val userDetails: CustomUserDetails = authentication.principal as CustomUserDetails
-            val accessToken: String = jwtUtil.generateToken(userDetails.username)
+        val userDetails: CustomUserDetails = authentication.principal as CustomUserDetails
+        val accessToken: String = jwtUtil.generateToken(userDetails.username)
 
-            return LoginResponseDTO(userDetails.username, accessToken)
-        } catch (ex: BadCredentialsException) {
-            throw BadCredentialsException(ex.message)
-        }
+        return LoginResponseDTO(userDetails.username, accessToken)
     }
 }

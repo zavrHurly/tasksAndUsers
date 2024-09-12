@@ -43,7 +43,6 @@ class SecurityConfig {
 
 
     @Bean
-    @Throws(java.lang.Exception::class)
     fun authenticationManager(
         authenticationConfiguration: AuthenticationConfiguration
     ): AuthenticationManager? {

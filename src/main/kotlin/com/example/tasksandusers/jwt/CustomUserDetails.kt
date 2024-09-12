@@ -8,7 +8,7 @@ class CustomUserDetails(private val user: User) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         //разделение на роли отсутствует
-        return ArrayList<GrantedAuthority>()
+        return mutableListOf()
     }
 
     override fun getPassword(): String {

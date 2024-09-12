@@ -7,6 +7,6 @@ import com.example.tasksandusers.model.dto.UserDTO
 
 interface UserService {
     fun getAllUsers(): List<UserDTO>
-    fun createUser(user: CreateUserRequestDTO): Long?
+    fun createUser(user: CreateUserRequestDTO): Long
     fun login(request: LoginRequestDTO): LoginResponseDTO
 }

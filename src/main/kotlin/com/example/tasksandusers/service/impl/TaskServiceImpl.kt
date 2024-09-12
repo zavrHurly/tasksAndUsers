@@ -1,5 +1,6 @@
 package com.example.tasksandusers.service.impl
 
+import com.example.tasksandusers.exception.ServiceException
 import com.example.tasksandusers.exception.TaskNotFoundException
 import com.example.tasksandusers.exception.UserNotFoundException
 import com.example.tasksandusers.mapper.impl.TaskMapperImpl
@@ -40,9 +41,9 @@ class TaskServiceImpl(
 
 
     //Создаем задачу
-    override fun createTask(task: TaskDTO): Long? {
+    override fun createTask(task: TaskDTO): Long {
         val user: User = UserUtils.getCurrentUser()
-        return taskRepository.save(taskMapper.taskDTOToTask(task, user)).id
+        return taskRepository.save(taskMapper.taskDTOToTask(task, user)).id?: throw ServiceException("Ошибка сервиса")
     }
 
     //Обновляем задачу, если она найдена, если нет выбрасываем исключение

@@ -1,5 +1,6 @@
 package com.example.tasksandusers.jwt
 
+import com.example.tasksandusers.exception.ServiceException
 import com.example.tasksandusers.repository.UserRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
@@ -20,7 +21,6 @@ class JwtTokenFilter(val userRepository: UserRepository) : OncePerRequestFilter(
     @Autowired
     private lateinit var jwtUtil: JwtUtil
 
-    @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -68,15 +68,7 @@ class JwtTokenFilter(val userRepository: UserRepository) : OncePerRequestFilter(
 
     private fun getUserDetails(token: String): UserDetails {
         val jwtSubject = jwtUtil.extractSubject(token)
-
-        if (jwtSubject != null) {
-            val user = userRepository.findByEmail(jwtSubject)
-            if (user != null) {
-                return CustomUserDetails(user)
-            }
-        }
-        throw Exception("jwtSubject is null")
+        val user = userRepository.findByEmail(jwtSubject) ?: throw ServiceException("User not found")
+        return CustomUserDetails(user)
     }
-
-
 }

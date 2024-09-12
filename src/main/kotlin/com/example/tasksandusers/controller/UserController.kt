@@ -2,6 +2,7 @@ package com.example.tasksandusers.controller
 
 import com.example.tasksandusers.model.dto.CreateUserRequestDTO
 import com.example.tasksandusers.model.dto.LoginRequestDTO
+import com.example.tasksandusers.model.dto.LoginResponseDTO
 import com.example.tasksandusers.model.dto.UserDTO
 import com.example.tasksandusers.service.impl.UserServiceImpl
 import org.springframework.http.ResponseEntity
@@ -18,12 +19,12 @@ class UserController(private val userService: UserServiceImpl) {
 
     @PostMapping("/registration")
     fun createUser(@RequestBody userRequest: CreateUserRequestDTO): ResponseEntity<String> {
-        val userId: Long? = userService.createUser(userRequest)
-        return ResponseEntity.ok("User with ID $userId has been created")
+        val userId = userService.createUser(userRequest)
+        return ResponseEntity.ok().body("User with ID $userId has been created")
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequestDTO): ResponseEntity<*> {
+    fun login(@RequestBody request: LoginRequestDTO): ResponseEntity<LoginResponseDTO> {
         return ResponseEntity.ok().body(userService.login(request))
     }
 

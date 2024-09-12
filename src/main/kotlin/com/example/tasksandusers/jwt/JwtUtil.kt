@@ -33,14 +33,14 @@ class JwtUtil(@Value("\${jwt.secret}") private val secret: String) {
         return signedJWT.serialize()
     }
 
-    fun extractSubject(token: String): String? {
+    fun extractSubject(token: String): String {
         try {
             val signedJWT = SignedJWT.parse(token)
             return signedJWT.jwtClaimsSet.subject
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return null
+        throw Exception("jwtSubject is null")
     }
 
 
